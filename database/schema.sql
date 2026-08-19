@@ -118,3 +118,31 @@ create index if not exists messages_conversation_created_idx
 
 create index if not exists messages_sender_idx
   on public.messages (sender_id);
+
+create table if not exists public.posts (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  content text not null,
+  likes integer not null default 0,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists posts_user_idx
+  on public.posts (user_id);
+
+create index if not exists posts_created_at_idx
+  on public.posts (created_at desc);
+
+create table if not exists public.comments (
+  id uuid primary key default gen_random_uuid(),
+  post_id uuid not null references public.posts(id) on delete cascade,
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  comment_text text not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists comments_post_idx
+  on public.comments (post_id);
+
+create index if not exists comments_user_idx
+  on public.comments (user_id);
