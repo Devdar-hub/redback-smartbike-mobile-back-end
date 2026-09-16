@@ -7,8 +7,8 @@ import friendsRoutes from './routes/friendsRoutes.js';
 import notificationsRoutes from './routes/notificationsRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import iotRoutes from './routes/iotRoutes.js';
-import ridesRoutes from './routes/ridesRoutes.js';
-import dashboardRoutes from './routes/dashboardRoutes.js';
+import postsRoutes from './routes/postsRoutes.js';
+import commentsRoutes from './routes/commentsRoutes.js';
 import { startMqttService } from './services/mqttService.js';
 
 dotenv.config();
@@ -26,6 +26,8 @@ app.use('/api/friends', friendsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/iot', iotRoutes);
+app.use('/api/posts', postsRoutes);
+app.use('/api/comments', commentsRoutes);
 app.use('/api/rides', ridesRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
