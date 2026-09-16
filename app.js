@@ -7,6 +7,8 @@ import friendsRoutes from './routes/friendsRoutes.js';
 import notificationsRoutes from './routes/notificationsRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import iotRoutes from './routes/iotRoutes.js';
+import ridesRoutes from './routes/ridesRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js';
 import { startMqttService } from './services/mqttService.js';
 
 dotenv.config();
@@ -24,6 +26,8 @@ app.use('/api/friends', friendsRoutes);
 app.use('/api/notifications', notificationsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/iot', iotRoutes);
+app.use('/api/rides', ridesRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.use('/api', (req, res) => {
   return res.status(404).json({ message: 'API route not found' });
