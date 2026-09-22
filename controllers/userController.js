@@ -20,6 +20,92 @@ const getFriendshipStatus = (friendship, currentUserId) => {
   return friendship.status;
 };
 
+export const listUsers = async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id,email,name,username,avatar_url,created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('List users query failed:', error);
+      return res
+        .status(500)
+        .json({ success: false, message: 'Failed to fetch users' });
+    }
+
+    return res.json({
+      success: true,
+      count: (data || []).length,
+      users: data || [],
+    });
+  } catch (error) {
+    console.error('List users endpoint failed:', error);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Failed to fetch users' });
+  }
+};
+
+export const createUser = async (req, res) => {
+  const {
+    id,
+    email,
+    name,
+    username,
+    avatar_url: avatarUrl,
+  } = req.body || {};
+
+  if (!id || !email) {
+    return res.status(400).json({
+      success: false,
+      message: 'id and email are required',
+    });
+  }
+
+  if (!isValidUuid(id)) {
+    return res
+      .status(400)
+      .json({ success: false, message: 'id must be a valid UUID' });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .insert({
+        id,
+        email: String(email).trim().toLowerCase(),
+        name: name ? String(name).trim() : null,
+        username: username ? String(username).trim() : null,
+        avatar_url: avatarUrl ? String(avatarUrl).trim() : null,
+      })
+      .select('id,email,name,username,avatar_url,created_at')
+      .single();
+
+    if (error) {
+      if (error.code === '23505') {
+        return res
+          .status(409)
+          .json({ success: false, message: 'Email or id already exists' });
+      }
+
+      console.error('Create user insert failed:', error);
+      return res
+        .status(500)
+        .json({ success: false, message: 'Failed to create user' });
+    }
+
+    return res
+      .status(201)
+      .json({ success: true, message: 'User created', user: data });
+  } catch (error) {
+    console.error('Create user endpoint failed:', error);
+    return res
+      .status(500)
+      .json({ success: false, message: 'Failed to create user' });
+  }
+};
+
 export const searchUsers = async (req, res) => {
   const query = String(req.query.q || '').trim();
   const currentUserId = req.query.current_user_id;
