@@ -1,7 +1,7 @@
 import { supabase } from '../config/supabaseClient.js';
 
 const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i;
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const toNumber = (value, fallback = 0) => {
   const number = Number(value);
@@ -10,6 +10,13 @@ const toNumber = (value, fallback = 0) => {
 };
 
 const isUuid = (value) => typeof value === 'string' && UUID_REGEX.test(value);
+
+const getRideIdParam = (req) => (
+  req.params?.ride_id ||
+  req.params?.rideId ||
+  req.params?.id ||
+  Object.values(req.params || {})[0]
+);
 
 const getRideSensorSummary = async (rideId) => {
   const { data, error } = await supabase
@@ -83,7 +90,7 @@ export const startRide = async (req, res) => {
 };
 
 export const endRide = async (req, res) => {
-  const { ride_id: rideId } = req.params;
+  const rideId = getRideIdParam(req);
   const {
     end_time,
     duration,
@@ -151,7 +158,7 @@ export const endRide = async (req, res) => {
 };
 
 export const getRide = async (req, res) => {
-  const { ride_id: rideId } = req.params;
+  const rideId = getRideIdParam(req);
 
   if (!isUuid(rideId)) {
     return res.status(400).json({ message: 'ride_id must be a valid UUID' });
