@@ -35,13 +35,13 @@ app.use('/api/notifications', notificationsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/iot', iotRoutes);
 app.use('/api/progression', progressionRoutes);
+app.use('/api/rides', ridesRoutes);
 app.use('/api/rides', rideRoutes);
 app.use('/api/workouts', rideRoutes);
 app.use('/api/ml', mlRoutes);
 app.use('/api/ai', aiRoutes);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', port: PORT }));
-app.use('/api/rides', ridesRoutes);
 // app.use('/api/dashboard', dashboardRoutes);
 
 app.use('/api', (req, res) => {
@@ -87,3 +87,5 @@ process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 
 export { app, httpServer, io };
 export default app;
+
+
